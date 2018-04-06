@@ -1,1 +1,13 @@
 # Lab8
+
+04/05/2018
+  Created the Maze Reader. If you need to reference the Maze object use the get Integer[][] myMazeLayout, it was instantiated in Game.
+  I made the program capable of adding a maze of any size. In the setup of game, the dimensions of the GamePanel are set to whatever the size of the rows and columns of the text file are.
+  The GamePanel class contains the paintComponent.
+  Realized that the blocks need to be a part of the solid object class. So I need to go back and edit that.
+  
+  FIXME: Make Blocks part of the SolidObject class
+  TODO: Player/Block Collision
+  TODO: Player/Item Collision
+  TODO: Player/Side of Panel Collision
+  TODO: If all items are gone, end the game, and display "You Won"

@@ -1,3 +1,6 @@
+/*
+ * Authors: Kate Hohenstein, Kathryn Reese, Hannah Hollenback
+ */
 package miscellaneous;
 
 public class SolidObject {

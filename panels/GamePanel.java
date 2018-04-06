@@ -15,6 +15,7 @@ import game.Game;
 
 public class GamePanel extends JPanel{
 	private Game myGame;
+	// Sets the standard Dimensions
 	private int xDimension = 500;
 	private int yDimension = 250;
 	private Dimension myDimensions = new Dimension(xDimension, yDimension);
@@ -53,8 +54,7 @@ public class GamePanel extends JPanel{
 	 ________________________________________________________________*/
 	public void paintComponent(Graphics page)
 	{
-		int x = 0;
-		int y = 0;
+		
 		super.paintComponent(page);
 		page.drawImage(myGame.getPlayerIcon().getImage(), myGame.getPlayer().getX(), myGame.getPlayer().getY(), null);
 		for(int r = 0; r < myGame.getRow(); r++) {
@@ -63,7 +63,10 @@ public class GamePanel extends JPanel{
 					
 				}
 				else if(myGame.getMyMazeArray()[r][c] == 1) {
-					page.drawImage(myGame.getWallIcon().getImage(), x, y, null);
+					for(int i = 0; i < myGame.getBlockIconArray().size(); i++) {
+						page.drawImage(myGame.getBlockIconArray().get(i).getImage(), myGame.getMyBlocksArray().get(i).getX(), myGame.getMyBlocksArray().get(i).getY(), null);
+					}
+					
 				}
 
 				else if(myGame.getMyMazeArray()[r][c] == 2){
@@ -71,11 +74,7 @@ public class GamePanel extends JPanel{
 							page.drawImage(myGame.getItemsIconArray().get(i).getImage(), myGame.getMyItemsList().get(i).getX(), myGame.getMyItemsList().get(i).getY(), null);
 					}
 				 }
-				
-				x += 50;
 			}
-			x = 0;
-			y += 50;
 		}
 			
 		

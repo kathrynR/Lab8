@@ -6,8 +6,14 @@
   The GamePanel class contains the paintComponent.
   Realized that the blocks need to be a part of the solid object class. So I need to go back and edit that.
   
-  FIXME: Make Blocks part of the SolidObject class
+  (As of 04/06/18: This has been Fixed)FIXME: Make Blocks part of the SolidObject class
+  
   TODO: Player/Block Collision
   TODO: Player/Item Collision
   TODO: Player/Side of Panel Collision
   TODO: If all items are gone, end the game, and display "You Won"
+  
+  04/05/18
+  I added in the Block class. There is an array for the Block items, and an array for the block item images. These are all instantiated in game.
+  
+  

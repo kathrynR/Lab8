@@ -46,6 +46,7 @@ public class Game {
 	private ArrayList<Items> myItemsList = new ArrayList<Items>();
 	private ArrayList<ImageIcon> itemsIconArray = new ArrayList<ImageIcon>();
 	private Items items;
+	private int numberOfItems = 5;
 		
 	///////////////////////////////////////////////////////////////////////////////////
 	// Variables for Maze related methods                                            //
@@ -110,7 +111,23 @@ public class Game {
 		myScanner.close();
 	}
 	
-
+	/* _______________________________________________________________________________________
+	 * Method Author: Kathryn Reese
+	 * Date: 04/04/18
+	 * setUpMaze() method:
+	 * calls an instance of Maze
+	 * 
+	 _________________________________________________________________________________________*/ 
+	private void setUpMaze() throws FileNotFoundException {
+		myMaze = new Maze("./src/Images/Wall.jpg");
+		myMaze.mazeReader();
+		myMazeArray = myMaze.getMyMazeLayout();
+		row = myMaze.getRow();
+		column = myMaze.getColumn();
+		wallIcon = new ImageIcon(myMaze.getWallImageLocation());
+		
+	}
+	
 	/* _______________________________________________________________________________________
 	 * Method Author: Kathryn Reese
 	 * Date: 03/22/18
@@ -134,21 +151,40 @@ public class Game {
 	
 	/* _______________________________________________________________________________________
 	 * Method Author: Kathryn Reese
-	 * Date: 03/22/18
+	 * Date: 04/05/18
 	 * Sets up the items on the screen. Creates a certain number of instances of items.
-	 * The first for loop will create instances of items giving them random X's, Y's, and images.
-	 * It adds these Item instances to a loop.
-	 * The second for loop, loops through the Items list and gets the images, puts the image path
+	 * The first two for loops run through the 2D Maze array.
+	 * The third for loop, loops through the Items list and gets the images, puts the image path
 	 * in an ImageIcon and stores these icons in another loop.
+	 * 
+	 * FIXME: It is possible for the method to get to the end and not include all of the items.
+	 * 		  Therefore you would need to run through the array again until all of the items are
+	 * 		  added.
 	 * 
 	 _________________________________________________________________________________________*/ 
 	private void setUpItems() {
-		for(int i = 0; i < (5) ; i++) {
-			
-			int randomItemX = randInt.nextInt(550 + 1);
-			int randomItemY = randInt.nextInt(550 + 1);
-			items = new Items(randomItemX, randomItemY, randomItemImage());
-			myItemsList.add(items);
+		// This first section determines where the items can be placed in the array.
+		int x = 50;
+		int y = 0;
+		int numberIterater = 0;
+		int placeItemTF;
+		
+		Integer[][] mazeArray = getMyMazeArray();
+		for(int r = 0; r < row; r++) {
+			for(int c = 0; c < column; c++) {
+				placeItemTF = randInt.nextInt(2);
+				if(mazeArray[r][c] == 0) {
+					if((placeItemTF == 0) && (numberIterater != numberOfItems)) {  // numberIterator != 4 prevents the number of 2 locations from exceeding the number of items
+						mazeArray[r][c] = 2;
+						numberIterater ++;
+						items = new Items(x, y, randomItemImage());
+						myItemsList.add(items);		
+					}			
+				}
+				x += 50;
+			}
+			x = 0;
+			y += 50;
 		}
 		for(int i = 0; i < myItemsList.size(); i++) {
 			String imagePathLocal = myItemsList.get(i).getImagePath();
@@ -160,24 +196,6 @@ public class Game {
 		
 	}
 	
-	/* _______________________________________________________________________________________
-	 * Method Author: Kathryn Reese
-	 * Date: 04/04/18
-	 * setUpMaze() method:
-	 * calls an instance of Maze
-	 * 
-	 _________________________________________________________________________________________*/ 
-	private void setUpMaze() throws FileNotFoundException {
-		myMaze = new Maze("./src/Images/Wall.jpg");
-		myMaze.mazeReader();
-		myMazeArray = myMaze.getMyMazeLayout();
-		row = myMaze.getRow();
-		column = myMaze.getColumn();
-		wallIcon = new ImageIcon(myMaze.getWallImageLocation());
-		
-	}
-	
-	
 
 	/*_________________________________________________________
 	 * 
@@ -188,8 +206,13 @@ public class Game {
 	public void setUp() throws FileNotFoundException
 	{
 		setUpPlayer();
-		setUpItems();
 		setUpMaze();
+		
+		// Adjusts the panel if the maze is bigger than 5 by 10
+		gamePanel.setxDimension(myMaze.getRow() * 50);
+		gamePanel.setyDimension(myMaze.getColumn() * 50);
+		
+		setUpItems();
 		playerIcon = new ImageIcon(player.getImagePath());
 	}
 
@@ -232,7 +255,6 @@ public class Game {
 		this.itemsIconArray = itemsIconArray;
 	}
 	
-
 	public Integer[][] getMyMazeArray() {
 		return myMazeArray;
 	}

@@ -15,13 +15,42 @@ import game.Game;
 
 public class GamePanel extends JPanel{
 	private Game myGame;
-	private Dimension myDimensions = new Dimension(500, 500);
+	private int xDimension = 500;
+	private int yDimension = 250;
+	private Dimension myDimensions = new Dimension(xDimension, yDimension);
+
 	public GamePanel() throws FileNotFoundException {
 		setPreferredSize(myDimensions);
 		myGame = new Game(this);
 		myGame.setUp();
 	}
+	
+	// Getters and setters to adjust the dimensions, depending on how big the maze file is.
+	public Dimension getMyDimensions() {
+		return myDimensions;
+	}
+	
+	public void setxDimension(int xDimension) {
+		this.xDimension = xDimension;
+	}
 
+	public void setyDimension(int yDimension) {
+		this.yDimension = yDimension;
+	}
+
+	public int getxDimension() {
+		return xDimension;
+	}
+
+	public int getyDimension() {
+		return yDimension;
+	}
+
+	/*_______________________________________________________________
+	 * paintComponent
+	 * (non-Javadoc)
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	 ________________________________________________________________*/
 	public void paintComponent(Graphics page)
 	{
 		int x = 0;
@@ -36,16 +65,13 @@ public class GamePanel extends JPanel{
 				else if(myGame.getMyMazeArray()[r][c] == 1) {
 					page.drawImage(myGame.getWallIcon().getImage(), x, y, null);
 				}
+
+				else if(myGame.getMyMazeArray()[r][c] == 2){
+					for(int i = 0; i < myGame.getMyItemsList().size(); i++) {
+							page.drawImage(myGame.getItemsIconArray().get(i).getImage(), myGame.getMyItemsList().get(i).getX(), myGame.getMyItemsList().get(i).getY(), null);
+					}
+				 }
 				
-				/*?????????????????????????????????????????????????
-				 * TODO: When items are instantiated:
-				 * 
-				 * for(int i = 0; i < myGame.getMyItemsList().size(); i++) {
-				 * page.drawImage(myGame.getItemsIconArray().get(i).getImage(), myGame.getMyItemsList().get(i).getX(), myGame.getMyItemsList().get(i).getY(), null);
-				 * }
-				 * else if(myGame.getmyMazeArray()[r][c] == 2){
-				 * }
-				 ??????????????????????????????????????????????????*/
 				x += 50;
 			}
 			x = 0;

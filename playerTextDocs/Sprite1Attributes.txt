@@ -1,0 +1,4 @@
+Boneman
+./src/Images/Sprite1.jpg
+0
+0

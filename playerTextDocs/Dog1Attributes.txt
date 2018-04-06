@@ -1,0 +1,4 @@
+Rover
+./src/Images/dog1.png
+0
+0

@@ -15,5 +15,6 @@
   
   04/06/2018
   I added in the Block class. There is an array for the Block items, and an array for the block item images. These are all instantiated in game.
+  I edited the photos so that they are all 50 x 50 pixels. This messes up the quality, but it makes it easier to set the program up. Supposedly they are all transparent in the background, at least on my computer, not sure if it will keep that transparency after I upload them.
   
   

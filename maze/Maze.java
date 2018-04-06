@@ -1,3 +1,9 @@
+/*
+ * Author: Kathryn Reese
+ * Partner: Hannah Hollenback
+ * 04/05/18
+ * The Maze class is used to set the landscape for the panel.
+ */
 package maze;
 
 import java.io.File;

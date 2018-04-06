@@ -9,15 +9,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import items.Items;
+import maze.Block;
 import maze.Maze;
 import panels.GamePanel;
 import player.Player;
 
 /*
- * Author: Kate Hohenstein
- * Partners: Hannah Hollenback, Kathryn Reese
- * Lab 6
+ * Author: Kathryn Reese
+ * Partners: Hannah Hollenback
  * 3/10/18
+ * edited: 04/05/18
  * Game: set up methods allowing for game execution
  */
 public class Game {
@@ -47,6 +48,14 @@ public class Game {
 	private ArrayList<ImageIcon> itemsIconArray = new ArrayList<ImageIcon>();
 	private Items items;
 	private int numberOfItems = 5;
+	
+	///////////////////////////////////////////////////////////////////////////////////
+	// Variables for Block related methods                                           //
+	///////////////////////////////////////////////////////////////////////////////////
+	private Block myBlock;
+	private ArrayList<Block> myBlocksArray = new ArrayList<Block>();
+	private ImageIcon blockIcon;
+	private ArrayList<ImageIcon> blockIconArray = new ArrayList<ImageIcon>();
 		
 	///////////////////////////////////////////////////////////////////////////////////
 	// Variables for Maze related methods                                            //
@@ -116,18 +125,46 @@ public class Game {
 	 * Date: 04/04/18
 	 * setUpMaze() method:
 	 * calls an instance of Maze
+	 * creates instances of blocks and stores them in a block array.
 	 * 
 	 _________________________________________________________________________________________*/ 
 	private void setUpMaze() throws FileNotFoundException {
-		myMaze = new Maze("./src/Images/Wall.jpg");
+		myMaze = new Maze("./src/Images/Wall.png");
 		myMaze.mazeReader();
 		myMazeArray = myMaze.getMyMazeLayout();
 		row = myMaze.getRow();
 		column = myMaze.getColumn();
 		wallIcon = new ImageIcon(myMaze.getWallImageLocation());
+		int x = 0;
+		int y = 0;
+		for(int r = 0; r < getRow(); r++) {
+			for(int c = 0; c < getColumn(); c++) {
+				if(getMyMazeArray()[r][c] == 0) {
+					
+				}
+				else if(getMyMazeArray()[r][c] == 1) {
+					myBlock = new Block(x, y, myMaze.getWallImageLocation());
+					blockIcon = new ImageIcon(myBlock.getImagePath());
+					myBlocksArray.add(myBlock);
+					blockIconArray.add(blockIcon);
+				}
+
+				else if(getMyMazeArray()[r][c] == 2){
+					for(int i = 0; i < getMyItemsList().size(); i++) {
+					
+					}
+				 }
+				
+				x += 50;
+			}
+			x = 0;
+			y += 50;
+		}
 		
 	}
 	
+	
+
 	/* _______________________________________________________________________________________
 	 * Method Author: Kathryn Reese
 	 * Date: 03/22/18
@@ -144,7 +181,7 @@ public class Game {
 			imageName = "Ball2.png";
 		}
 		else if(randomImage == 2) {
-			imageName = "Bone.jpg";
+			imageName = "Bone.png";
 		}
 		return imagePath + imageName;
 	}
@@ -164,33 +201,43 @@ public class Game {
 	 _________________________________________________________________________________________*/ 
 	private void setUpItems() {
 		// This first section determines where the items can be placed in the array.
-		int x = 50;
+		int x = 0;
 		int y = 0;
 		int numberIterater = 0;
+		int itemsOnScreen = 0;
 		int placeItemTF;
 		
 		Integer[][] mazeArray = getMyMazeArray();
-		for(int r = 0; r < row; r++) {
-			for(int c = 0; c < column; c++) {
-				placeItemTF = randInt.nextInt(2);
-				if(mazeArray[r][c] == 0) {
-					if((placeItemTF == 0) && (numberIterater != numberOfItems)) {  // numberIterator != 4 prevents the number of 2 locations from exceeding the number of items
-						mazeArray[r][c] = 2;
-						numberIterater ++;
-						items = new Items(x, y, randomItemImage());
-						myItemsList.add(items);		
-					}			
+		while(itemsOnScreen != numberOfItems) { // Ensures that all the items will show up on screen
+			for(int r = 0; r < row; r++) {
+				for(int c = 0; c < column; c++) {
+					placeItemTF = randInt.nextInt(2);
+					if(r == 0 && c == 0) { // prevents the item from being painted above the character
+						
+					}
+					else {
+						
+					if(mazeArray[r][c] == 0) {
+						if((placeItemTF == 0) && (numberIterater != numberOfItems)) {  // numberIterator != 4 prevents the number of 2 locations from exceeding the number of items
+							mazeArray[r][c] = 2;
+							numberIterater ++;
+							items = new Items(x, y, randomItemImage());
+							myItemsList.add(items);		
+							itemsOnScreen ++;
+						}			
+					}
+					}
+					x += 50;
 				}
-				x += 50;
+				x = 0;
+				y += 50;
 			}
-			x = 0;
-			y += 50;
-		}
-		for(int i = 0; i < myItemsList.size(); i++) {
-			String imagePathLocal = myItemsList.get(i).getImagePath();
-			ImageIcon itemsIcon = new ImageIcon(imagePathLocal);
-			itemsIconArray.add(itemsIcon);
-			
+			for(int i = 0; i < myItemsList.size(); i++) {
+				String imagePathLocal = myItemsList.get(i).getImagePath();
+				ImageIcon itemsIcon = new ImageIcon(imagePathLocal);
+				itemsIconArray.add(itemsIcon);
+				
+			}
 		}
 		
 		
@@ -211,6 +258,7 @@ public class Game {
 		// Adjusts the panel if the maze is bigger than 5 by 10
 		gamePanel.setxDimension(myMaze.getRow() * 50);
 		gamePanel.setyDimension(myMaze.getColumn() * 50);
+		gamePanel.getMyDimensions().setSize(gamePanel.getyDimension(), gamePanel.getxDimension());
 		
 		setUpItems();
 		playerIcon = new ImageIcon(player.getImagePath());
@@ -269,5 +317,20 @@ public class Game {
 
 	public int getColumn() {
 		return column;
+	}
+	public ArrayList<Block> getMyBlocksArray() {
+		return myBlocksArray;
+	}
+
+	public void setMyBlocksArray(ArrayList<Block> myBlocksArray) {
+		this.myBlocksArray = myBlocksArray;
+	}
+
+	public ArrayList<ImageIcon> getBlockIconArray() {
+		return blockIconArray;
+	}
+
+	public void setBlockIconArray(ArrayList<ImageIcon> blockIconArray) {
+		this.blockIconArray = blockIconArray;
 	}
 }

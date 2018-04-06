@@ -1,4 +1,4 @@
 Boneman
-./src/Images/Sprite1.jpg
+./src/Images/Sprite1.png
 0
 0

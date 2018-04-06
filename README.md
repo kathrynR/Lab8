@@ -13,7 +13,7 @@
   TODO: Player/Side of Panel Collision
   TODO: If all items are gone, end the game, and display "You Won"
   
-  04/05/18
+  04/06/2018
   I added in the Block class. There is an array for the Block items, and an array for the block item images. These are all instantiated in game.
   
   

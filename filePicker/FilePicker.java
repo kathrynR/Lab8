@@ -24,7 +24,6 @@ public class FilePicker {
 		}
 		Random myRand = new Random();
 		int randomInteger = myRand.nextInt(fileNameArray.size());
-		
 		return fileLocation + fileNameArray.get(randomInteger);
 	}
 

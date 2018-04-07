@@ -1,4 +1,5 @@
 package game;
+import java.awt.Font;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -6,11 +7,16 @@ import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
+import enemy.Enemy;
 import items.Items;
 import maze.Block;
 import maze.Maze;
+import miscellaneous.Score;
+import movement.Movement;
 import panels.GamePanel;
 import player.Player;
 
@@ -20,6 +26,10 @@ import player.Player;
  * 3/10/18
  * edited: 04/05/18
  * Game: set up methods allowing for game execution
+ * 
+ * Ideas for the future: Could have level one random mazes, level two, and three
+ * When the next level approaches change the folder the maze will take from.
+ * 
  */
 public class Game {
 	/*-----------------------------------------------
@@ -39,6 +49,12 @@ public class Game {
 	private String filePath = "./src/playerTextDocs/";
 	
 	///////////////////////////////////////////////////////////////////////////////////
+	// Variables for Enemy related methods                                           //
+	///////////////////////////////////////////////////////////////////////////////////
+	private Enemy enemy;
+	private int enemySpeed = 750;
+
+	///////////////////////////////////////////////////////////////////////////////////
 	// Variables for Item related methods                                            //
 	///////////////////////////////////////////////////////////////////////////////////
 	// Instance of random to set the location of items
@@ -47,7 +63,7 @@ public class Game {
 	private ArrayList<Items> myItemsList = new ArrayList<Items>();
 	private ArrayList<ImageIcon> itemsIconArray = new ArrayList<ImageIcon>();
 	private Items items;
-	private int numberOfItems = 5;
+	private int numberOfItems = randInt.nextInt(16) + 5;
 	
 	///////////////////////////////////////////////////////////////////////////////////
 	// Variables for Block related methods                                           //
@@ -65,8 +81,32 @@ public class Game {
 	private int row;
 	private int column;
 	private ImageIcon wallIcon;
+	private int numberOfEmptySpaces;
 
 	private GamePanel gamePanel;
+	private Movement myMovement;
+	
+	///////////////////////////////////////////////////////////////////////////////////
+	// Variables for Winning the Game	                                             //
+	///////////////////////////////////////////////////////////////////////////////////
+	private Score myScore = new Score();
+	// Score label
+	
+	private JLabel topThreeScores = new JLabel();
+	private JLabel myWinningMessage = new JLabel("You Won!");
+	private Font myWinFont = new Font("Britannic Bold", Font.BOLD, 100);
+	
+	///////////////////////////////////////////////////////////////////////////////////
+	// Variables for Game Over			                                             //
+	///////////////////////////////////////////////////////////////////////////////////
+	private JLabel myLosingMessage = new JLabel("GAME OVER!");
+	private Font myLossFont = new Font("Chiller", Font.BOLD, 100);
+	
+	///////////////////////////////////////////////////////////////////////////////////
+	// Variables for Resetting the Game	                                             //
+	///////////////////////////////////////////////////////////////////////////////////
+	private JFrame myFrame;
+	private JButton replayButton = new JButton("Replay");
 	
 	/*------------------------------------------------
 	 * Constructor
@@ -120,6 +160,21 @@ public class Game {
 		myScanner.close();
 	}
 	
+	/* ____________________________________________________________________________________
+	 * Method Author: Kathryn Reese
+	 * Original Creation Date: 03/22/18
+	 * Lab 8 Edit: 04/06/18
+	 * This method sets up the enemy at a random position at the lower right
+	 * corner of the screen on the game panel.
+	 ______________________________________________________________________________________*/
+	private void setUpEnemy() {
+		int enemyX = gamePanel.getyDimension() - 50; 
+		int enemyY = gamePanel.getxDimension() - 100;
+		
+		enemy = new Enemy(enemyX, enemyY, "./src/Images/DogCatcher2.png", this, player, gamePanel, myMovement);
+		enemy.getMyTimer().start();
+	}
+	
 	/* _______________________________________________________________________________________
 	 * Method Author: Kathryn Reese
 	 * Date: 04/04/18
@@ -152,18 +207,13 @@ public class Game {
 				else if(getMyMazeArray()[r][c] == 2){
 					for(int i = 0; i < getMyItemsList().size(); i++) {
 					
-					}
-				 }
+					}}
 				
 				x += 50;
 			}
 			x = 0;
 			y += 50;
-		}
-		
-	}
-	
-	
+		}}
 
 	/* _______________________________________________________________________________________
 	 * Method Author: Kathryn Reese
@@ -194,10 +244,6 @@ public class Game {
 	 * The third for loop, loops through the Items list and gets the images, puts the image path
 	 * in an ImageIcon and stores these icons in another loop.
 	 * 
-	 * FIXME: It is possible for the method to get to the end and not include all of the items.
-	 * 		  Therefore you would need to run through the array again until all of the items are
-	 * 		  added.
-	 * 
 	 _________________________________________________________________________________________*/ 
 	private void setUpItems() {
 		// This first section determines where the items can be placed in the array.
@@ -212,7 +258,7 @@ public class Game {
 			for(int r = 0; r < row; r++) {
 				for(int c = 0; c < column; c++) {
 					placeItemTF = randInt.nextInt(2);
-					if(r == 0 && c == 0) { // prevents the item from being painted above the character
+					if(r == 0 && c == 0) { // prevents the item from being painted on top of the character
 						
 					}
 					else {
@@ -224,9 +270,7 @@ public class Game {
 							items = new Items(x, y, randomItemImage());
 							myItemsList.add(items);		
 							itemsOnScreen ++;
-						}			
-					}
-					}
+						}}}
 					x += 50;
 				}
 				x = 0;
@@ -235,13 +279,8 @@ public class Game {
 			for(int i = 0; i < myItemsList.size(); i++) {
 				String imagePathLocal = myItemsList.get(i).getImagePath();
 				ImageIcon itemsIcon = new ImageIcon(imagePathLocal);
-				itemsIconArray.add(itemsIcon);
-				
-			}
-		}
-		
-		
-	}
+				itemsIconArray.add(itemsIcon);	
+			}}}
 	
 
 	/*_________________________________________________________
@@ -261,13 +300,74 @@ public class Game {
 		gamePanel.getMyDimensions().setSize(gamePanel.getyDimension(), gamePanel.getxDimension());
 		
 		setUpItems();
+		
 		playerIcon = new ImageIcon(player.getImagePath());
+		myMovement = new Movement(this, player, gamePanel, myItemsList, itemsIconArray, myBlocksArray, blockIconArray, playerIcon, myScore);
+		setUpEnemy();
+	}
+	
+	/*_________________________________________________________
+	 * 
+	 * endGame() Method:
+	 * determines what happens when all the items have been retrieved.
+	 * 
+	 __________________________________________________________*/
+	public void endGame() {
+		gamePanel.removeKeyListener(myMovement);
+		enemy.getMyTimer().stop();
+		for(int i = 0; i < blockIconArray.size(); i ++) {
+			myBlocksArray.remove(i);
+			blockIconArray.remove(i);
+			gamePanel.add(myWinningMessage);
+			myWinningMessage.setFont(myWinFont);
+		}
+		
 	}
 
+	/*_________________________________________________________
+	 * 
+	 * gameOver() Method:
+	 * Determines what happens when the player collides with the
+	 * enemy.
+	 * 
+	 __________________________________________________________*/
+	public void gameOver() {
+		gamePanel.removeKeyListener(myMovement);
+		enemy.getMyTimer().stop();
+		for(int i = 0; i < blockIconArray.size(); i ++) {
+			myBlocksArray.remove(i);
+			blockIconArray.remove(i);
+			gamePanel.add(myLosingMessage);
+			myLosingMessage.setFont(myLossFont);
+		}
+	}
 	
+	/*_________________________________________________________
+	 * 
+	 * resetGame() Method:
+	 * resets the game after game over or after all items have been retrieved.
+	 * 
+	 __________________________________________________________*/
+	public void resetGame() throws FileNotFoundException {
+		myFrame = gamePanel.getMyFrame();
+		gamePanel.getMyFrame().remove(gamePanel);
+		GamePanel newGamePanel = new GamePanel(myFrame);
+		myFrame.add(newGamePanel);
+
+	}
+
 	/*----------------------------------------------------
 	 * Getters and Setters
 	 -----------------------------------------------------*/
+
+	public Enemy getEnemy() {
+		return enemy;
+	}
+
+	public void setEnemy(Enemy enemy) {
+		this.enemy = enemy;
+	}
+	
 	public ImageIcon getPlayerIcon() {
 		return playerIcon;
 	}
@@ -332,5 +432,13 @@ public class Game {
 
 	public void setBlockIconArray(ArrayList<ImageIcon> blockIconArray) {
 		this.blockIconArray = blockIconArray;
+	}
+	
+	public int getEnemySpeed() {
+		return enemySpeed;
+	}
+
+	public void setEnemySpeed(int enemySpeed) {
+		this.enemySpeed = enemySpeed;
 	}
 }

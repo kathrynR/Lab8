@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.io.FileNotFoundException;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import game.Game;
@@ -19,13 +20,19 @@ public class GamePanel extends JPanel{
 	private int xDimension = 500;
 	private int yDimension = 250;
 	private Dimension myDimensions = new Dimension(xDimension, yDimension);
+	private JFrame myFrame;
 
-	public GamePanel() throws FileNotFoundException {
+	public GamePanel(JFrame myFrame) throws FileNotFoundException {
+		this.myFrame = myFrame;
 		setPreferredSize(myDimensions);
 		myGame = new Game(this);
 		myGame.setUp();
 	}
 	
+	public JFrame getMyFrame() {
+		return myFrame;
+	}
+
 	// Getters and setters to adjust the dimensions, depending on how big the maze file is.
 	public Dimension getMyDimensions() {
 		return myDimensions;
@@ -57,6 +64,7 @@ public class GamePanel extends JPanel{
 		
 		super.paintComponent(page);
 		page.drawImage(myGame.getPlayerIcon().getImage(), myGame.getPlayer().getX(), myGame.getPlayer().getY(), null);
+		page.drawImage(myGame.getEnemy().getEnemyIcon().getImage(), myGame.getEnemy().getX(), myGame.getEnemy().getY(), null);
 		for(int r = 0; r < myGame.getRow(); r++) {
 			for(int c = 0; c < myGame.getColumn(); c++) {
 				if(myGame.getMyMazeArray()[r][c] == 0) {

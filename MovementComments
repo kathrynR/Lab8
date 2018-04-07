@@ -1,0 +1,182 @@
+package Movement;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Timer;
+
+import javax.swing.JPanel;
+
+import player.Player;
+
+/*
+ * Author: Hannah Hollenback
+ * Partners:Kathryn Reese
+ * Lab 7
+ * 3/15/18
+ * Movement: set up methods allowing for movement of and collisions of characters
+ */
+
+// Commenting out the enemy for now. If we want to do the extra credit we can worry about it later.
+public class Movement implements KeyListener{
+	private Player myPlayer;
+	//private Enemy myEnemy;
+	private JPanel myPanel;
+	private Timer myTimer = new Timer();
+	
+	public Movement(Player myPlayer, JPanel myPanel) {
+		this.myPlayer = myPlayer;
+		//this.myEnemy = myEnemy;
+		this.myPanel = myPanel;
+		myPanel.addKeyListener(this); // Kathryn: This adds your key listener to the panel
+		myPanel.setFocusable(true); // Kathryn: This ensures that the keyboard is focused on this specific panel.
+	}
+	
+	//get player position X,Y, listen to input from user re: direction
+	//change player coordinates accordingly and re-set them, show image in new position
+	
+	///////////////////////////////////////////////////////////////////
+	// Kathryn: I took out the parameters for movePlayer.
+	// Since you inserted your player into the movement constructor
+	// you won't need it in the methods parameters.
+	///////////////////////////////////////////////////////////////////
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////
+	// Kathryn: I made all the images 50 pixels x 50 pixels (I realized this would work better) 
+	// We can move the player 50 units instead of 20
+	/////////////////////////////////////////////////////////////////////////////////////////////
+	/*public void movePlayer()
+	{	
+		
+		
+	}*/
+	
+	// Cassen's collision detector 
+	////////////////////////////////////////////////////////////////////////////
+	// Kathryn: This can be used to check if solid objects are colliding.
+	// 	You'll want all the collision detection before the key pressed method.
+	// 	You can call the collision detectors in the keypressed method.
+	////////////////////////////////////////////////////////////////////////////
+	private boolean areRectsColliding(int r1TopLeftX, int r1BottomRightX,int r1TopLeftY, int r1BottomRightY, int r2TopLeftX,int r2BottomRightX, int r2TopLeftY, int r2BottomRightY)
+	{
+		if (r1TopLeftX < r2BottomRightX && r1BottomRightX > r2TopLeftX&& r1TopLeftY < r2BottomRightY && r1BottomRightY > r2TopLeftY){
+			return true;
+		}
+		else{
+		return false;
+		}
+	}
+	
+	// For example:
+	private void playerItemCollision()
+	{	
+		// Kathryn: This says if the player collides with the item, then do stuff.
+		// We'll probably want to create variables that hold the ImageIcons dimensions
+		// example: int playerLeftX = myPlayer.getX();
+		// 			int playerRightX = myPlayer.getX() + "ImageIcon's width";
+		// FIXME:
+		if(areRectsColliding(/*playerLeftX, playerRightX, playerTopY, playerBottomY, itemLeftX, itemRightX, itemTopY, ItemBottomY*/)) {
+			// FIXME: What Happens when the player and the item collide
+		}
+	}//end of playerItemCollision
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Kathryn: the keyPressed method is its own method. Since the Movement implements the KeyListener,
+	// when we create an instance of movement it will automatically move the player
+	// I changed the x's and y's to 50 instead of 20
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	public void keyPressed(KeyEvent arg0) {
+		
+		if (arg0.getKeyCode()== KeyEvent.VK_LEFT)
+		{
+			myPlayer.setX(myPlayer.getX()-50);	
+		}
+		else if (arg0.getKeyCode()==KeyEvent.VK_RIGHT)
+		{
+			myPlayer.setX(myPlayer.getX()+50);
+		}
+		else if (arg0.getKeyCode()==KeyEvent.VK_DOWN)
+		{
+			myPlayer.setY(myPlayer.getY()+50);
+		}
+		else if (arg0.getKeyCode()==KeyEvent.VK_UP)
+		{
+			myPlayer.setY(myPlayer.getY()-50);
+		}
+	}
+	
+	
+	//?????????????????????????????????????????????????????????????????????????????????????????????????????????????????
+	//get enemy position X,Y, change coordinates based on player movement (somehow), re-set X,Y
+	//and show image in new position
+	/*public void moveEnemy(myEnemy)
+	{	
+		if myPlayer.getX()<myEnemy.getX()
+		{
+			Enemy(myEnemy.setX(myEnemy.getX()-20));
+		}
+		else if myPlayer.getX()>myEnemy.get(x)
+		{
+			Enemy(myEnemy.setX(myEnemy.getX()+20));
+		}
+		else if myPlayer.getY()<myEnemy.getY()
+		{
+			Enemy(myEnemy.setY(myEnemy.getY()-20));
+		}
+		else if myPlayer.getY()>myEnemy.getY()
+		{
+			Enemy(myEnemy.setY(myEnemy.getY()+20))
+		}
+	}*/
+	
+	//boolean "watching" to see if player and enemy X,Y are the same
+	//this is comparing the top left corner and bottom right corner of the picture to determine the collision.
+	
+/*	public boolean playerEnemyCollision(int getPlayerX, int getPlayerY, int getPlayerBottomX, int getPlayerBottomY
+										int getEnemyPosX, int getEnemyPosY, int getEnemyBottomX, int getEnemyBottomY)
+	{	
+		if (getPlayerX < getEnemyBottomX && getPlayerBottomX > getEnemyPosX && getPlayerY < getEnemyBottomY
+			&& getPlayerBottomY > getEnemyPosY)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	
+	}//end of playerEnemyCOllision
+*/	
+	//boolean "watching" to see if player and any item X,Y are the same
+	//this is basically the same as the enemycollision detector, but with the items
+	/*public boolean playerItemCollision(int getPlayerX, int getPlayerY, int getPlayerBottomX, int getPlayerBottomY,
+								       int getItemPosX, int getItemPosY, int getItemBottomX, int getItemBottomY)
+	{	
+		if (getPlayerX < getItemBottomX && getPlayerBottomX > getItemPosX && getPlayerY < getItemBottomY
+				&& getPlayerBottomY > getItemPosY)
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+	}//end of playerItemCollision
+*/	
+	//?????????????????????????????????????????????????????????????????????????????????????????????????????????????
+	
+	public void wallCollision()
+	{
+		
+	}
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+}
+	

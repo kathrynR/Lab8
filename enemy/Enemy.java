@@ -18,6 +18,11 @@ import player.Player;
  * Partners: Hannah Hollenback
  * Date: 04/04/2018
  * The enemy class extends SolidObjects class and has Game, MainPanel, and Player added onto it.
+ * Methods Contained:
+ * 		- Enemy/Block Collision
+ * 		- Enemy/Player Collision
+ * Also Contains:
+ * 		- An Enemy timer
  */
 public class Enemy extends SolidObject {
 	
@@ -35,9 +40,9 @@ public class Enemy extends SolidObject {
 	private int blockTopY;
 	private int blockBottomY;
 	private int xBeforeCollision = 1;
-	private boolean xPressed = false;
+	private boolean xMoved = false;
 	private int yBeforeCollision = 1;
-	private boolean yPressed = false;
+	private boolean yMoved = false;
 		
 
 	public Enemy(int x, int y, String imagePath, Game myGame, Player myPlayer, GamePanel myPanel, Movement myMovement) {
@@ -105,31 +110,31 @@ public class Enemy extends SolidObject {
 			if(areRectsColliding(getEnemyLeftX(), getEnemyRightX(), getEnemyTopY(), getEnemyBottomY(), blockLeftX, blockRightX, blockTopY, blockBottomY)) {
 				//////////////////////////////////////////////////////////////////////////////////////////////
 				// Explanation:																				//
-				// 		This determines what will happen if the player collides with a block.				//
-				//		- If yBeforeCollision == 0 (corresponds to the Up key pressed before collision) 	//
-				//			and yPressed (up or down keys are pressed before collision) is true,			//
-				//			then the player will move down 50 pixels.										//
-				//		- If yBeforeCollision == 1 (corresponds to the Down key pressed before collision)	//
-				//			and yPressed (up or down keys are pressed before collision) is true,		 	//
-				//			then the player will move up 50 pixels.									 	 	//
-				//		- If xBeforeCollision == 0 (corresponds to the left key pressed before collision)  	//
-				//			and xPressed (left or right keys are pressed before collision) is true,		 	//
-				//			then the player will move right 50 pixels.									 	//
-				//		- If xBeforeCollision == 1 (corresponds to the right key pressed before collision)  //
-				//			and xPressed (left or right keys are pressed before collision) is true,		 	//
-				//			then the player will move left 50 pixels.									 	//
+				// 		This determines what will happen if the enemy collides with a block.				//
+				//		- If yBeforeCollision == 0 (corresponds to the enemy moving down before collision) 	//
+				//			and yMoved (up or down keys are pressed before collision) is true,				//
+				//			then the enemy will move up 50 pixels.											//
+				//		- If yBeforeCollision == 1 (corresponds to the enemy moving up before collision)	//
+				//			and yMoved (up or down keys are pressed before collision) is true,		 		//
+				//			then the enemy will move down 50 pixels.								 	 	//
+				//		- If xBeforeCollision == 0 (corresponds to the enemy moving right before collision) //
+				//			and xMoved (left or right keys are pressed before collision) is true,		 	//
+				//			then the enemy will move left 50 pixels.									 	//
+				//		- If xBeforeCollision == 1 (corresponds to the left key pressed before collision)   //
+				//			and xMoved (left or right keys are pressed before collision) is true,		 	//
+				//			then the enemy will move right 50 pixels.									 	//
 				//																						 	//
 				//////////////////////////////////////////////////////////////////////////////////////////////
-				if(yBeforeCollision == 0 && yPressed == true) { // down
+				if(yBeforeCollision == 0 && yMoved == true) { // down
 					setY(getY() - 50);
 				}
-				else if(yBeforeCollision == 1 && yPressed == true) { // up
+				else if(yBeforeCollision == 1 && yMoved == true) { // up
 					setY(getY() + 50);
 				}
-				else if(xBeforeCollision == 0 && xPressed == true) { // right
+				else if(xBeforeCollision == 0 && xMoved == true) { // right
 					setX(getX() - 50);
 				}
-				else if(xBeforeCollision == 1 && xPressed == true) { // left
+				else if(xBeforeCollision == 1 && xMoved == true) { // left
 					setX(getX() + 50);
 				}
 			}
@@ -162,7 +167,9 @@ public class Enemy extends SolidObject {
 	 * Enemies Timer Listener:
 	 * Follows the player. When the Enemies x position or y
 	 * position is less than or greater than the players,
-	 * the enemy will move 5 units in the players direction.
+	 * the enemy will move 50 units in the players direction.
+	 * 
+	 * FIXME: Panel border/enemy collision is not working properly
 	 * 
 	 _______________________________________________________*/
 	private class timerListener implements ActionListener
@@ -179,8 +186,20 @@ public class Enemy extends SolidObject {
 				if(getEnemyLeftX() < panelLeftX) {
 					setX(getX() + 50); // Panel collision, if the enemies x is less than the panels x, prevent them from going further.
 				}
-				xPressed = true;
-				yPressed = false;
+				
+				/////////////////////////////////////////////////////////////////////////////////////////////////
+				// These are used to determine what will happen when a enemy collides with a block.            //
+				// If the enemy moves left or right before colliding xMoved becomes true and yMoved 		   //
+				// becomes false.																	           //
+				// xBefore collision determines if the enemy moved left or right before collision.             //
+				// these will change depending on which direction the enemy moved.                             //
+				// Note: This is the same as the player's block collision, so I could later make a collision   //
+				// class with these variables.																   //
+				// FIXME: The enemy will randomly faze into a block sometimes. Why? Is it the diagonal 		   //
+				// movement?							   													   //
+				/////////////////////////////////////////////////////////////////////////////////////////////////
+				xMoved = true;
+				yMoved = false;
 				xBeforeCollision = 0;	// right
 			}
 			if (getX() > myPlayer.getX()) {
@@ -189,8 +208,8 @@ public class Enemy extends SolidObject {
 					setX(getX() - 50); // panel collision, if the enemies x is greater than the panels right x, prevent them from going further.
 				}
 				xBeforeCollision = 1; // left
-				xPressed = true;
-				yPressed = false;	
+				xMoved = true;
+				yMoved = false;	
 			}
 			if (getY() < myPlayer.getY()) {
 				setY(getY() + 50);
@@ -198,8 +217,8 @@ public class Enemy extends SolidObject {
 					setY(getY() + 50); // panel collision, if the enemies y is less than the panels top y, prevent them from going further.
 				}
 				yBeforeCollision = 0;
-				xPressed = false;
-				yPressed = true;
+				xMoved = false;
+				yMoved = true;
 			}
 			if (getY() > myPlayer.getY()) {
 				setY(getY() - 50);
@@ -207,14 +226,13 @@ public class Enemy extends SolidObject {
 					setY(getY() - 50); // panel collision, if the enemies y is greater than the panels bottom y, prevent them from going further.
 				}
 				yBeforeCollision = 1;
-				xPressed = false;
-				yPressed = true;
+				xMoved = false;
+				yMoved = true;
 			}
 			blockEnemyCollision();
 			try {
 				enemyPlayerCollision();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			myPanel.repaint();

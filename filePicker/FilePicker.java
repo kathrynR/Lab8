@@ -1,3 +1,9 @@
+/*
+ * Author: Kathryn Reese
+ * Partner: Hannah Hollenback
+ * This Class will grab file names from a file and returns a random
+ * image path.
+ */
 package filePicker;
 
 import java.io.File;

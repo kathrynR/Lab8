@@ -1,3 +1,14 @@
+/*
+ * Author: Kathryn Reese
+ * Partner: Hannah Hollenback
+ * The movement class determines player movement and player collision
+ * **Note: The Enemy class movement is all contained within the enemy class.**
+ * Notable Methods Contained:
+ * 		- Player/Item Collision
+ * 		- Player/Block Collision
+ * 		- Methods to get the players corner coordinates.
+ * KeyListener is contained within this class
+ */
 package movement;
 
 import java.awt.Color;
@@ -52,7 +63,8 @@ public class Movement implements KeyListener{
 	
 	private JLabel myScoreLabel = new JLabel();
 	
-	public Movement(Game myGame, Player myPlayer, GamePanel myPanel, ArrayList<Items> myItemsList, ArrayList<ImageIcon> itemsIconArray, ArrayList<Block> myBlockArray, ArrayList<ImageIcon> blockIconArray, ImageIcon playerIcon, Score myScore) {
+	public Movement(Game myGame, Player myPlayer, GamePanel myPanel, ArrayList<Items> myItemsList, ArrayList<ImageIcon> itemsIconArray, 
+					ArrayList<Block> myBlockArray, ArrayList<ImageIcon> blockIconArray, ImageIcon playerIcon, Score myScore) {
 		this.myGame = myGame;
 		this.myItemsList = myItemsList;
 		this.itemsIconArray = itemsIconArray;
@@ -124,7 +136,6 @@ public class Movement implements KeyListener{
 	 _______________________________________________________*/
 	private void itemPlayerCollision() {
 		for(int i = 0; i < itemsIconArray.size(); i++) {
-			System.out.println("ItemsIconArray Size: " + itemsIconArray.size() + "\n" + "myItemsList: " + myItemsList.size());
 			itemLeftX = myItemsList.get(i).getX();
 			itemRightX = myItemsList.get(i).getX() + itemsIconArray.get(i).getIconWidth();
 			itemTopY = myItemsList.get(i).getY();

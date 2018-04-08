@@ -1,5 +1,6 @@
 /*
  * Authors: Kate Hohenstein, Kathryn Reese, Hannah Hollenback
+ * Getters and setters placed into solid object class by Kathryn
  */
 package miscellaneous;
 

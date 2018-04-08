@@ -26,9 +26,20 @@ import player.Player;
  * 3/10/18
  * edited: 04/05/18
  * Game: set up methods allowing for game execution
+ * Notable Methods:
+ * 		- Randomly select the player image
+ * 		- Set Up the Player
+ * 		- Set up the Enemy
+ * 		- Set up the Maze
+ * 		- get a random item image
+ * 		- set up the items
+ * 		- set up game (grabs setup player, enemy, maze, and items method)
+ * 		- end game (if player gets all the items)
+ * 		- game over (enemy catches player)
+ * 		- reset game (As of yet not used, will determine what happens if a reset button is pressed)
  * 
- * Ideas for the future: Could have level one random mazes, level two, and three
- * When the next level approaches change the folder the maze will take from.
+ * ***Ideas for the future: Could have level one random mazes, level two, and three
+ * When the next level approaches change the folder the maze will take from.***
  * 
  */
 public class Game {
@@ -81,7 +92,6 @@ public class Game {
 	private int row;
 	private int column;
 	private ImageIcon wallIcon;
-	private int numberOfEmptySpaces;
 
 	private GamePanel gamePanel;
 	private Movement myMovement;
@@ -240,47 +250,55 @@ public class Game {
 	 * Method Author: Kathryn Reese
 	 * Date: 04/05/18
 	 * Sets up the items on the screen. Creates a certain number of instances of items.
-	 * The first two for loops run through the 2D Maze array.
+	 * The first for loop will grab the row and column of the maze spaces and place them in row
+	 * and column arrays.
+	 * The Second for loop will grab a random row and column location to place items. Then it 
+	 * multiplies these rows and columns by 50 to determine where to place each item.
 	 * The third for loop, loops through the Items list and gets the images, puts the image path
 	 * in an ImageIcon and stores these icons in another loop.
 	 * 
 	 _________________________________________________________________________________________*/ 
 	private void setUpItems() {
+		// create an array of rows and columns of blank spaces. 
+		// randInt.nextInt
 		// This first section determines where the items can be placed in the array.
-		int x = 0;
-		int y = 0;
-		int numberIterater = 0;
-		int itemsOnScreen = 0;
+		ArrayList<Integer> myColumns = new ArrayList<Integer>();
+		ArrayList<Integer> myRows = new ArrayList<Integer>();
+		int numberIterator = 0;
 		int placeItemTF;
+		int randomRowAndColumn;
 		
 		Integer[][] mazeArray = getMyMazeArray();
-		while(itemsOnScreen != numberOfItems) { // Ensures that all the items will show up on screen
-			for(int r = 0; r < row; r++) {
-				for(int c = 0; c < column; c++) {
-					placeItemTF = randInt.nextInt(2);
-					if(r == 0 && c == 0) { // prevents the item from being painted on top of the character
-						
-					}
-					else {
-						
-					if(mazeArray[r][c] == 0) {
-						if((placeItemTF == 0) && (numberIterater != numberOfItems)) {  // numberIterator != 4 prevents the number of 2 locations from exceeding the number of items
-							mazeArray[r][c] = 2;
-							numberIterater ++;
-							items = new Items(x, y, randomItemImage());
-							myItemsList.add(items);		
-							itemsOnScreen ++;
-						}}}
-					x += 50;
+		for(int r = 0; r < row; r++) {
+			for(int c = 0; c < column; c++) {
+				
+				if(r == 0 && c == 0) { // prevents the item from being painted on top of the character
+					
 				}
-				x = 0;
-				y += 50;
+				
+				else {
+					if(mazeArray[r][c] == 0) {
+						myRows.add(r);
+						myColumns.add(c);
+					}}}}
+		int rowSize = myRows.size();
+		for(int i = 0; i < rowSize; i++) {
+			placeItemTF = randInt.nextInt(2);
+			randomRowAndColumn = randInt.nextInt(myRows.size());
+			if((placeItemTF == 0) && (numberIterator != numberOfItems)) {  // numberIterator != 4 prevents the number of 2 locations from exceeding the number of items
+				items = new Items(myColumns.get(randomRowAndColumn) * 50, myRows.get(randomRowAndColumn) * 50, randomItemImage());
+				myItemsList.add(items);	
+				mazeArray[myRows.get(randomRowAndColumn)][myColumns.get(randomRowAndColumn)] = 2;
+				myRows.remove(randomRowAndColumn);
+				myColumns.remove(randomRowAndColumn);
+				numberIterator ++;
 			}
-			for(int i = 0; i < myItemsList.size(); i++) {
-				String imagePathLocal = myItemsList.get(i).getImagePath();
-				ImageIcon itemsIcon = new ImageIcon(imagePathLocal);
-				itemsIconArray.add(itemsIcon);	
-			}}}
+		}
+		for(int i = 0; i < myItemsList.size(); i++) {
+			String imagePathLocal = myItemsList.get(i).getImagePath();
+			ImageIcon itemsIcon = new ImageIcon(imagePathLocal);
+			itemsIconArray.add(itemsIcon);	
+		}}
 	
 
 	/*_________________________________________________________

@@ -1,6 +1,8 @@
 /*
  * Author: Kathryn Reese
  * Partner: Hannah Hollenback
+ * Child of the SolidObject class
+ * No new methods added as of yet.
  */
 package maze;
 

@@ -1,4 +1,9 @@
-
+/*
+ * Author: Kathryn Reese
+ * Partner: Hannah Hollenback
+ * This is the driver for the program.
+ * It contains the main method.
+ */
 package main;
 
 import java.io.FileNotFoundException;
